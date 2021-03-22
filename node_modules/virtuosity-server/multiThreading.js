@@ -165,8 +165,8 @@ var cluster = async function(path, input, onComplete, threads){
 
 /*
 * @name cluster-worker
-* @type return
-* @description This is an object passed to the cluster worker. A cluster worker should be structured: <code><span class="blue">module</span>.<span class="green">exports</span><span class="red">=</span>(<span class="orange">worker</span>)<span class="blue">=></span>{};</code>
+* @type class
+* @description This is an object passed to the cluster worker. A cluster worker should be structured: <div class="code"><span class="blue">module</span>.<span class="green">exports</span><span class="red">=</span>(<span class="orange">worker</span>)<span class="blue">=></span>{};</div>
 */
 /*
 * @name output
@@ -178,6 +178,7 @@ var cluster = async function(path, input, onComplete, threads){
 /*
 * @name input
 * @type property
+* @proto Any
 * @description input to the cluster-worker
 * @parent cluster-worker
 */
@@ -185,6 +186,7 @@ var cluster = async function(path, input, onComplete, threads){
 /*
 * @name id
 * @type property
+* @proto Int
 * @description id of the cluster-worker
 * @parent cluster-worker
 */
@@ -192,6 +194,7 @@ var cluster = async function(path, input, onComplete, threads){
 /*
 * @name pid
 * @type property
+* @proto Int
 * @description pid of the cluster-worker
 * @parent cluster-worker
 */

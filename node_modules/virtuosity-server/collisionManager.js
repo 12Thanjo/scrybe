@@ -12,12 +12,15 @@
 * @type class
 * @description Returns a Point collision shape object
 * @parent shape
+* @param {x}{Number}{x position of the Point}
+* @param {y}{Number}{y position of the Point}
 */
 var Point = function(x, y){
 	/*
 	* @name x
 	* @type property
-	* @description x position of the Point [Float]
+	* @proto Number
+	* @description x position of the Point
 	* @parent shape.Point
 	*/
 	this.x = x;
@@ -25,7 +28,7 @@ var Point = function(x, y){
 	/*
 	* @name y
 	* @type property
-	* @description y position of the Point [Float]
+	* @description y position of the Point
 	* @parent shape.Point
 	*/
 	this.y = y;
@@ -34,10 +37,11 @@ var Point = function(x, y){
 	/*
 	* @name position
 	* @type method
+	* @proto Number
 	* @description Sets the position of the point
 	* @parent shape.Point
-	* @param {x}{Float}{x position of the Point}
-	* @param {y}{Float}{y position of the Point}
+	* @param {x}{Number}{x position of the Point}
+	* @param {y}{Number}{y position of the Point}
 	*/
 	this.position = function(x, y){
 		this.x = x;
@@ -51,12 +55,17 @@ var Point = function(x, y){
 * @type class
 * @description Returns a Box collision shape object
 * @parent shape
+* @param {x}{Number}{x position of the Box}
+* @param {y}{Number}{y position of the Box}
+* @param {width}{Number}{width of the Box}
+* @param {height}{Number}{height of the Box}
 */
 var Box = function(x, y, width, height){
 	/*
 	* @name x
 	* @type property
-	* @description x position of the Box [Float]
+	* @proto Number
+	* @description x position of the Box
 	* @parent shape.Box
 	*/
 	this.x = x;
@@ -64,7 +73,8 @@ var Box = function(x, y, width, height){
 	/*
 	* @name y
 	* @type property
-	* @description y position of the Box [Float]
+	* @proto Number
+	* @description y position of the Box
 	* @parent shape.Box
 	*/
 	this.y = y;
@@ -72,7 +82,8 @@ var Box = function(x, y, width, height){
 	/*
 	* @name width
 	* @type property
-	* @description width of the Box [Float]
+	* @proto Number
+	* @description width of the Box
 	* @parent shape.Box
 	*/
 	this.width = width;
@@ -80,7 +91,8 @@ var Box = function(x, y, width, height){
 	/*
 	* @name height
 	* @type property
-	* @description height of the Box [Float]
+	* @proto Number
+	* @description height of the Box
 	* @parent shape.Box
 	*/
 	this.hieght = height;
@@ -90,8 +102,8 @@ var Box = function(x, y, width, height){
 	* @type method
 	* @description Sets the position of the box
 	* @parent shape.Box
-	* @param {x}{Float}{x position of the Point}
-	* @param {y}{Float}{y position of the Point}
+	* @param {x}{Number}{x position of the Point}
+	* @param {y}{Number}{y position of the Point}
 	*/
 	this.position = function(x, y){
 		this.x = x;
@@ -103,8 +115,8 @@ var Box = function(x, y, width, height){
 	* @type method
 	* @description Sets the scaling of the box
 	* @parent shape.Box
-	* @param {width}{Float}{width of the box}
-	* @param {height}{Float}{height of the box}
+	* @param {width}{Number}{width of the box}
+	* @param {height}{Number}{height of the box}
 	*/
 	this.scaling = function(width, hieght){
 		this.width = width;
@@ -117,12 +129,16 @@ var Box = function(x, y, width, height){
 * @type class
 * @description Returns a Circle collision shape object
 * @parent shape
+* @param {x}{Number}{x position of the Circle}
+* @param {y}{Number}{y position of the Circle}
+* @param {r}{Number}{radius of the Circle}
 */
 var Circle = function(x, y, r){
 	/*
 	* @name x
 	* @type property
-	* @description x position of the Circle [Float]
+	* @proto Number
+	* @description x position of the Circle
 	* @parent shape.Circle
 	*/
 	this.x = x;
@@ -130,7 +146,8 @@ var Circle = function(x, y, r){
 	/*
 	* @name y
 	* @type property
-	* @description y position of the Circle [Float]
+	* @proto Number
+	* @description y position of the Circle
 	* @parent shape.Circle
 	*/
 	this.y = y;
@@ -138,7 +155,8 @@ var Circle = function(x, y, r){
 	/*
 	* @name r
 	* @type property
-	* @description radius of the Circle [Float]
+	* @proto Number
+	* @description radius of the Circle
 	* @parent shape.Circle
 	*/
 	this.r = r;
@@ -147,9 +165,9 @@ var Circle = function(x, y, r){
 	* @name position
 	* @type method
 	* @description Sets the position of the box
-	* @parent shape.Box
-	* @param {x}{Float}{x position of the Circle}
-	* @param {y}{Float}{y position of the Circle}
+	* @parent shape.Circle
+	* @param {x}{Number}{x position of the Circle}
+	* @param {y}{Number}{y position of the Circle}
 	*/
 	this.position = function(x, y){
 		this.x = x;
@@ -157,11 +175,11 @@ var Circle = function(x, y, r){
 	}
 
 	/*
-	* @name position
+	* @name scaling
 	* @type method
-	* @description Sets the position of the box
-	* @parent shape.Box
-	* @param {r}{Float}{radius of the Circle}
+	* @description Sets the scaling of the box
+	* @parent shape.Circle
+	* @param {r}{Number}{radius of the Circle}
 	*/
 	this.scaling = function(r){
 		this.r = r;
@@ -175,12 +193,17 @@ var Circle = function(x, y, r){
 * @type class
 * @description Returns a Line collision shape object
 * @parent shape
+* @param {x1}{Number}{x position of the first point of the Line}
+* @param {y1}{Number}{y position of the first point of the Line}
+* @param {x2}{Number}{x position of the second point of the Line}
+* @param {y2}{Number}{y position of the second point of the Line}
 */
 var Line = function(x1, y1, x2, y2){
 	/*
 	* @name x1
 	* @type property
-	* @description x1 position of the Line [Float]
+	* @proto Number
+	* @description x1 position of the Line
 	* @parent shape.Line
 	*/
 	this.x1 = x1;
@@ -188,7 +211,8 @@ var Line = function(x1, y1, x2, y2){
 	/*
 	* @name y1
 	* @type property
-	* @description y1 position of the Line [Float]
+	* @proto Number
+	* @description y1 position of the Line
 	* @parent shape.Line
 	*/
 	this.y1 = y1;
@@ -196,7 +220,8 @@ var Line = function(x1, y1, x2, y2){
 	/*
 	* @name x2
 	* @type property
-	* @description x2 position of the Line [Float]
+	* @proto Number
+	* @description x2 position of the Line
 	* @parent shape.Line
 	*/
 	this.x2 = x2;
@@ -204,7 +229,8 @@ var Line = function(x1, y1, x2, y2){
 	/*
 	* @name y2
 	* @type property
-	* @description y2 position of the Line [Float]
+	* @proto Number
+	* @description y2 position of the Line
 	* @parent shape.Line
 	*/
 	this.y2 = y2;
@@ -213,7 +239,8 @@ var Line = function(x1, y1, x2, y2){
 	/*
 	* @name width
 	* @type property
-	* @description width of the Line [Float]
+	* @proto Number
+	* @description width of the Line
 	* @parent shape.Line
 	*/
 	this.width = 1;
@@ -224,8 +251,8 @@ var Line = function(x1, y1, x2, y2){
 	* @type method
 	* @description Sets the position of the box
 	* @parent shape.Line
-	* @param {x1}{Float}{x1 position of the Line}
-	* @param {y1}{Float}{y1 position of the Line}
+	* @param {x1}{Number}{x1 position of the Line}
+	* @param {y1}{Number}{y1 position of the Line}
 	*/
 	this.position1 = function(x1, y1){
 		this.x1 = x1;
@@ -237,8 +264,8 @@ var Line = function(x1, y1, x2, y2){
 	* @type method
 	* @description Sets the position of the box
 	* @parent shape.Line
-	* @param {x2}{Float}{x2 position of the Line}
-	* @param {y2}{Float}{y2 position of the Line}
+	* @param {x2}{Number}{x2 position of the Line}
+	* @param {y2}{Number}{y2 position of the Line}
 	*/
 	this.position2 = function(x2, y2){
 		this.x2 = x2;
@@ -271,7 +298,7 @@ var Line = function(x1, y1, x2, y2){
 * @type class
 * @description Returns a Polygon collision shape object
 * @parent shape
-* @param {points}{Array}{points of the Polygon. Can be made up of <a href="./virtuosity.collisionManager.shape.Point.html">Points</a>, arrays setup like: [x, y], or a combination.}
+* @param {points}{[Point]}{points of the Polygon. Can be made up of <a href="./virtuosity.collisionManager.shape.Point.html">Points</a>, arrays setup like: [x, y], or a combination.}
 */
 var Polygon = function(points){
 	/*
@@ -294,6 +321,7 @@ var Polygon = function(points){
 	/*
 	* @name points
 	* @type property
+	* @proto [Point]
 	* @description points of the polygon
 	* @parent shape.Polygon
 	*/
@@ -561,8 +589,8 @@ module.exports = {
 		* @type method
 		* @description Check if two collision objects are colliding. Automatically decided which collision function to use.
 		* @parent collision
-		* @param {a}{<a href="virtuosity.collisionManager.shape.hieghttml">any collision object</a>}{first object to check collision}
-		* @param {a}{<a href="virtuosity.collisionManager.shape.hieghttml">any collision object</a>}{second object to check collision}
+		* @param {a}{<a href="virtuosity.collisionManager.shape.html">any collision object</a>}{first object to check collision}
+		* @param {b}{<a href="virtuosity.collisionManager.shape.html">any collision object</a>}{second object to check collision}
 		*/
 		auto: function(a, b){
 			if(a instanceof Point){

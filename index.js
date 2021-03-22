@@ -2,15 +2,18 @@ var virtuosity = require('virtuosity-server');
 var {files} = require('virtuosity-server');
 var nodehp = require('nodehp');
 
-virtuosity.console.log("SCRYBE", virtuosity.console.color.green);
-virtuosity.console.log("automatic documentation tool", virtuosity.console.color.green);
-virtuosity.console.log("------------------------------------");
-virtuosity.console.log(" ");
-virtuosity.console.log("Files: ", virtuosity.console.color.yellow);
-virtuosity.console.log("-------");
+virtuosity.cmd.log("SCRYBE", virtuosity.cmd.color.green);
+virtuosity.cmd.log("automatic documentation tool", virtuosity.cmd.color.green);
+virtuosity.cmd.log("------------------------------------");
+virtuosity.cmd.log(" ");
+virtuosity.cmd.log("Files: ", virtuosity.cmd.color.yellow);
+virtuosity.cmd.log("-------");
 
-error = function(message){
-	virtuosity.console.log("ERROR: " + message, virtuosity.console.color.red);
+error = function(message, line){
+	virtuosity.cmd.log("ERROR: " + message, virtuosity.cmd.color.red);
+	if(line != null){
+		virtuosity.cmd.log("Line: " + line, virtuosity.cmd.color.red);
+	}
 	process.exit();
 }
 
@@ -135,7 +138,7 @@ var current_entity = new Entity();
 push_entity = function(target){
 	// check for necesary parts
 	if(current_entity.name == ''){
-		error("entity has no name");
+		error("entity has no name", target.line);
 	}
 	if(current_entity.type != "head"){
 		if(head != {}){
@@ -156,13 +159,11 @@ push_entity = function(target){
 
 					// traverse entity tree
 					var target = head;
-					console.log(parents_array);
 					parents_array.forEach((parent)=>{
 						if(target.children.has(parent)){
 							target = target.children.get(parent);
 						}else{
-							// console.log(target.children);
-							error(`parent (${parent}) is not defined in (${current_entity.parent_string})`);
+							error(`parent (${parent}) is not defined in (${current_entity.name})`, current_entity.line);
 						}	
 					});
 
@@ -171,19 +172,19 @@ push_entity = function(target){
 						target.children.set(current_entity.name, current_entity);
 						current_entity.parent = target;
 					}else{
-						error(`entity (${current_entity.name}) is already defined in (${current_entity.parent_string})`);
+						error(`entity (${current_entity.name}) is already defined in (${current_entity.parent_string})`, current_entity.line);
 					}
 				}else{// child of head
 					if(!head.children.has(current_entity.name)){
 						head.children.set(current_entity.name, current_entity);
 						current_entity.parent = head;
 					}else{
-						error(`entity (${current_entity.name}) is already defined`);
+						error(`entity (${current_entity.name}) is already defined`, current_entity.line);
 					}
 				}
 			}
 		}else{
-			error("Head must be defined first");
+			error("Head must be defined first", current_entity.line);
 		}
 	}else{
 		// define head
@@ -219,14 +220,18 @@ search_keyword = function(string, cursor, file){
 
 
 parse_file = function(path, parent){
-	virtuosity.console.log(path, virtuosity.console.color.yellow);
+	virtuosity.cmd.log(path, virtuosity.cmd.color.yellow);
 	if(files.fileExists(path)){
 		var file = files.readFile(path);
 		var file_length = file.length;
 		var cursor = 0;
+		var current_line = 0;
 		var search = false;
 		while(cursor < file_length){
 			var char = file[cursor];
+			if(char == "\n"){
+				current_line += 1;
+			}
 			// makes it easer to use search_keyword();
 			var keyword = function(string){
 				return search_keyword(string, cursor, file);
@@ -244,12 +249,12 @@ parse_file = function(path, parent){
 
 			if(search){
 				/////////////////////////////////////////////////////////
-
 				if(char == "@"){
 					if(keyword("@name ")){
 						if(current_entity.name == ''){
 							cursor += ("@name ").length;
 							current_entity.name = get_line();
+							current_entity.line = current_line;
 						}else{
 							cursor -= 1;
 							if(current_entity.parent_string != ""){
@@ -279,7 +284,6 @@ parse_file = function(path, parent){
 					}else if(keyword("@parent ")){
 						cursor += ("@parent ").length;
 						current_entity.parent_string = get_line();
-						console.log(current_entity.parent_string);
 					}else if(keyword("@env ")){
 						cursor += ("@env ").length;
 						current_entity.env = get_line();
@@ -382,6 +386,7 @@ parse_file = function(path, parent){
 			}
 			cursor += 1;
 		}
+		console.log(current_line);
 	}else{
 		error(`File path "${path}" does not exist`);
 	}
@@ -453,20 +458,20 @@ function traverse_tree(target, depth, completed, parent, end){
 			parent = "";
 		}
 
-		var color = virtuosity.console.color.magenta;
+		var color = virtuosity.cmd.color.magenta;
 		if(target.type == "obj"){
-			color = virtuosity.console.color.green;
+			color = virtuosity.cmd.color.green;
 		}else if(target.type == "method"){
-			color = virtuosity.console.color.cyan;
+			color = virtuosity.cmd.color.cyan;
 		}else if(target.type == "property"){
-			color = virtuosity.console.color.blue;
+			color = virtuosity.cmd.color.blue;
 		}else if(target.type == "head"){
-			color = virtuosity.console.background_color.blue;
+			color = virtuosity.cmd.backgroundColor.blue;
 		}else if(target.type == "class" || target.type == "entity" || target.type == "return"){
-			color = virtuosity.console.color.yellow;
+			color = virtuosity.cmd.color.yellow;
 		}
 
-		virtuosity.console.log(str + color + target.name + virtuosity.console.background_color.black);
+		virtuosity.cmd.log(str + color + target.name + virtuosity.cmd.backgroundColor.black);
 
 
 		var str = target.name;

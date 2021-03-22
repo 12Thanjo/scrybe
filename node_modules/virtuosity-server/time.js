@@ -29,6 +29,7 @@ var advancedTimer = function(duration, func){
 	/*
 	* @name running
 	* @type property
+	* @proto Boolean
 	* @description True if the advancedTimer is running
 	* @parent advancedTimer
 	*/
@@ -41,6 +42,7 @@ var advancedTimer = function(duration, func){
 	/*
 	* @name paused
 	* @type property
+	* @proto Boolean
 	* @description True if the advancedTimer is paused
 	* @parent advancedTimer
 	*/
@@ -53,6 +55,7 @@ var advancedTimer = function(duration, func){
 	/*
 	* @name duration
 	* @type property
+	* @proto Number
 	* @description Sets the duration of the advancedTimer. If advancedTimer is running while the duration is changed, and it is changed to a time less than what has elapsed already, the advancedTimer ends.
 	* @parent advancedTimer
 	*/

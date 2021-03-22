@@ -1,6 +1,6 @@
 {
   "name": "scrybe",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Automated documentation creation tool",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "nodehp": "^1.4.0",
-    "virtuosity-server": "^0.4.6"
+    "virtuosity-server": "^0.6.0"
+  },
+  "homepage": "https://12thanjo.github.io/virtuosity/documentation/virtuosity.html",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/12Thanjo/scrybe"
   }
 }
