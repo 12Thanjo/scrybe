@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<link rel="icon" href="favicon.ico">
+		<nodehp>
+			echo(`<title>${data.head} Documentation | Components</title>`);
+		</nodehp>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+		<style>
+			table{
+				margin-top: 0px;
+			}
+		</style>
+	</head>
+	<header>
+		<datalist id="entities"></datalist>
+
+
+
+		<div class="menu-bar" id="desktop-navbar">
+		    <div class="left">
+                <nodehp>
+        			echo(`<button class="menubar-btn" onclick="location.href='./${data.head}.html'">Home</button>`);
+                </nodehp>
+		    </div>
+		    <div class="right">
+		    	<button class="menubar-btn" id="dark-mode" onclick="toggle_mode();">Dark Mode</button>
+		    	<nodehp>
+		    		if(data.use_components){
+		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>ESCS Components</button>`);
+		    		}
+		    	</nodehp>
+		        <input id="search" placeholder="Search..." list="entities" style="width: 250px;">
+		        <button id="search-button" onclick="search();">Search</button>
+		    </div>
+		</div>
+W
+
+		<div class="menu-bar" id="mobile-navbar">
+	        <nodehp>
+				echo(`<button class="menubar-btn" onclick="location.href='./${data.head}.html'">Home</button>`);
+	        </nodehp>
+			<button class="menubar-btn"></button>
+			<button class="menubar-btn" id="mobile-search-button">Search</button>
+		</div>
+
+		<div class="menu-bar mobile-interactive" id="search-navbar">
+			<div style="float: right">
+				<input id="search" placeholder="Search...">
+				<button id="search-button-mobile">Search</button>
+			</div>
+		</div>
+
+		<div class="menu-bar" id="mobile-navbar">
+	        <nodehp>
+				echo(`<button class="menubar-btn" onclick="location.href='./${data.head}.html'">Home</button>`);
+	        </nodehp>
+			<button class="menubar-btn" id="dark-mode-mobile" onclick="toggle_mode();">Dark Mode</button>
+			<button class="menubar-btn" id='mobile-search-button'>Search</button>
+		</div>
+
+		<div class="menu-bar mobile-interactive" id="search-navbar">
+			<div style="float: right">
+				<input id="search-mobile" placeholder="Search..." list="entities">
+				<button id="search-button-mobile" onclick="search();">Search</button>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="./entity list.JSON"></script>
+		<script type="text/javascript">
+			var search_navbar = document.getElementById('search-navbar');
+			search_navbar.style.visibility = "hidden";
+
+
+			document.getElementById('mobile-search-button').onclick = ()=>{
+				if(search_navbar.style.visibility == 'hidden'){
+					search_navbar.style.visibility = "visible";
+					path_navbar.style.visibility = "hidden";
+				}else{
+					search_navbar.style.visibility = "hidden";
+				}
+			}
+
+			var datalist = document.getElementById('entities');
+			entity_search_list.forEach((entity)=>{
+				datalist.innerHTML += `<option value="${entity}">`
+			});
+			var entity_list_set = new Set(entity_list);
+			var entity_search_list_set = new Set(entity_list);
+
+			search = function(){
+				var desktop = document.getElementById('search').value;
+				var mobile = document.getElementById('search-mobile').value;
+				var query = "";
+				if(desktop != ""){
+					query = desktop;
+				}else{
+					query = mobile;
+				}
+
+				if(entity_list_set.has(query)){
+					location.href = `./virtuosity.${query}.html`;
+				}else{
+					var arr = query.split('.');
+					var last = arr[arr.length-1];
+					var href = query.substr(0, query.length - last.length - 1);
+
+					if(entity_list_set.has(href)){
+						location.href = `./virtuosity.html#${last}`;
+					}
+				}
+			}
+
+
+			document.addEventListener('keydown', (event)=>{
+				if(event.keyCode == 13){
+					search();
+				}
+			});
+
+
+
+
+			create_cookie = function(cname, cvalue){
+			    document.cookie = cname + ' =' + cvalue + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=path;domain=domain; secure";
+			}
+
+			delete_cookie = function(cname){
+			    document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+			}
+
+
+			get_cookie = function(cname){
+			    var name = cname + "=";
+			    var ca = document.cookie.split(';');
+			    for(var i = 0; i < ca.length; i++){
+			        var c = ca[i];
+			        while(c.charAt(0) == ' '){
+			            c = c.substring(1);
+			        }
+			        if(c.indexOf(name) == 0){
+			            return c.substring(name.length, c.length);
+			        }
+			    }
+			    return "";
+			}
+
+			var forEach = function(arr, event){
+				var length = arr.length;
+				for(var i=0; i<arr.length;i++){
+					event(arr[i]);
+				}
+			}
+
+			var mode = "light";
+			toggle_mode = function(){
+				if(mode == "light"){
+					set_mode('dark');
+				}else{
+					set_mode('light');
+				}
+			}
+
+			set_mode = function(_mode){
+				console.log(_mode);
+				if(_mode == "dark"){
+					mode = "dark";
+					create_cookie('viewmode', 'dark');
+					document.getElementById('dark-mode').innerHTML = "Light Mode";
+					document.getElementById('dark-mode-mobile').innerHTML = "Light Mode";
+
+					// css
+					document.body.classList.toggle('dark');
+					forEach(document.getElementsByClassName('code'), (div)=>{
+						div.classList.add('dark-code');
+					});
+					forEach(document.getElementsByTagName('a'), (div)=>{
+						div.classList.add('dark');
+					});
+					forEach(document.getElementsByClassName('menu-bar'), (div)=>{
+						div.classList.add('menu-bar-dark');
+					});
+					forEach(document.getElementsByTagName('th'), (div)=>{
+						div.classList.add('dark');
+					});
+					forEach(document.getElementsByTagName('tr'), (div)=>{
+						div.classList.add('dark');
+					});
+				}else{
+					mode = "light";
+					create_cookie('viewmode', 'light');
+					document.getElementById('dark-mode').innerHTML = "Dark Mode";
+					document.getElementById('dark-mode-mobile').innerHTML = "Dark Mode";
+
+					// css
+					document.body.classList.toggle('dark');
+					forEach(document.getElementsByClassName('code'), (div)=>{
+						div.classList.remove('dark-code');
+					});
+					forEach(document.getElementsByTagName('a'), (div)=>{
+						div.classList.remove('dark');
+					});
+					forEach(document.getElementsByClassName('menu-bar'), (div)=>{
+						div.classList.remove('menu-bar-dark');
+					});
+					forEach(document.getElementsByTagName('th'), (div)=>{
+						div.classList.remove('dark');
+					});
+					forEach(document.getElementsByTagName('tr'), (div)=>{
+						div.classList.remove('dark');
+					});
+				}
+			}
+
+			if(get_cookie('viewmode') != ""){
+				mode = get_cookie('viewmode');
+				document.addEventListener("DOMContentLoaded", ()=>{
+					set_mode(mode);
+				});
+			}else{
+				create_cookie('viewmode', 'light');
+			}
+		</script>
+	</header>
+	<body>
+		<div id="container">
+			<div id="header-spacing"></div>
+			<h1>ESCS Components</h1>
+			<p>ESCS is an adaptation of an entity component system. escs (pronounced "essex") stands for Entity, Singleton, Component, System. Documentation for ESCS can be found <a href="https://www.npmjs.com/package/escs">here</a>.</p>
+			<h3>Environments:</h3>
+			<ul>
+				<nodehp>
+					data.environments.forEach((env)=>{
+						echo(`<li><a href=#${env.name}>${env.name}</a></li>`);
+					});
+				</nodehp>
+			</ul>
+			<hr>
+			<nodehp>
+				var param_type_color = function(str){
+					var array = false;
+					if(str[0] == "[" && str[str.length-1] == "]"){
+						array = true;
+						str = str.slice(1, str.length-1);
+					}
+
+					var color = "";
+
+					if(str == "String"){
+						color = "yellow";
+					}else if(str == "Int" || str == "Number" || str == "Hex" || str == "Boolean"){
+						color = "purple";
+					}else if(str == "Function" || str == "Object"){
+						color = "blue";
+					}else{
+						color = "white";
+					}
+
+					if(!array){
+						return `<var><span class="${color}">${str}</span></var>`;
+					}else{
+						return `<var><span class="white">[</span><span class="${color}">${str}</span><span class="white">]</span></var>`;
+					}
+				}
+
+				var type_color = function(str){
+					if(str.includes(",")){
+						var arr = str.split(',');
+						var output = "";
+
+						for(var i=0; i<arr.length;i++){
+							output += type_color(arr[i]);
+							if(i < arr.length-1){
+								output += " / ";
+							}
+						}
+						return output;
+					}else{
+						if(str == ""){
+							return '';
+						}else if((str[0] == `"` && str[str.length-1] == `"`) || (str[0] == `'` && str[str.length-1] == `'`)){//string
+							return `<var><span class="yellow">${str}</span></var>`;
+						}else if(str.includes(' ')){
+							return str;
+						}else if(!isNaN(str)){// number
+							return `<var><span class="purple">${str}</span></var>`;
+						}else if(str == "true" || str == "False"){
+							return `<var><span class="purple">${str}</span></var>`;
+						}else{
+							return param_type_color(str);
+						}
+					}
+				}
+
+				data.environments.forEach((env)=>{
+					echo(`<h2 id="${env.name}">${env.name}</h2>`);
+					echo(`<ul>`);
+					env.components.forEach((comp)=>{
+						tag('li', `<a href=#${comp.name}>${comp.name}</a>`);
+					});
+					echo(`</ul>`);
+					env.components.forEach((comp)=>{
+						echo(`<h3 id='${comp.name}'>${comp.name}</h3>`);
+						tag('p', comp.description);
+
+						var _default = false;
+						for(var i = comp.params.length - 1; i>=0; i--){
+							if(comp.params[i]._default != ""){
+								_default = true;
+								break;
+							}
+						}
+
+						if(_default){
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+													<th>Default</th>
+												</tr>`;
+							comp.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param.name}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+												<td>${type_color(param._default)}</td>
+											</tr>`;
+							});
+						}else{
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+												</tr>`;
+							comp.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param.name}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+											</tr>`;
+							});
+						}
+
+						echo(table + "</table>");
+					});
+				});
+			</nodehp>
+		</div>
+	</body>
+	<footer>
+		<p>Documentation Generated by <a href="https://www.npmjs.com/package/scrybe">Scrybe</a></p>
+	</footer>
+</html>

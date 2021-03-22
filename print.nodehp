@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<link rel="icon" href="favicon.ico">
+		<nodehp>
+			var head = data.path == data.title;
+			var title_description = "";
+			var code_path_split = [data.title];
+
+			if(!head){
+				title_description = ` | ${data.path}`
+				code_path_split = data.path.split('.');
+			}
+
+			echo(`<title>${data.head} Documentation${title_description}</title>`);
+		</nodehp>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+	</head>
+	<header>
+		<datalist id="entities"></datalist>
+		<div class="menu-bar" id="desktop-navbar">
+		    <div class="left">
+		        <nodehp>
+		        	if(!head){
+		        		var path_str = "";
+			        	code_path_split.forEach((code_path)=>{
+			        		if(path_str != ""){
+			        			path_str += "." + code_path;
+			        		}else{
+			        			path_str += code_path;
+			        		}
+			        		if(code_path != data.title){
+			        			echo(`<button class="menubar-btn" onclick="location.href='./${path_str}.html'">${code_path}</button>`);
+			        		}
+			        	});
+		        	}else{
+		        		echo(`<button class="menubar-btn">${data.title}</button>`);
+		        	}
+		        </nodehp>
+		    </div>
+		    <div class="right">
+		    	<button class="menubar-btn" id="dark-mode" onclick="toggle_mode();">Dark Mode</button>
+		    	<nodehp>
+		    		if(data.use_components){
+		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>ESCS Components</button>`);
+		    		}
+		    	</nodehp>
+		        <input id="search" placeholder="Search..." list="entities" style="width: 250px;">
+		        <button id="search-button" onclick="search();">Search</button>
+		    </div>
+		</div>
+
+		<div class="menu-bar" id="mobile-navbar">
+			<button class="menubar-btn" id="mobile-path-button">Path</button>
+			<nodehp>
+				if(data.use_components){
+					echo(`<button class="menubar-btn" onclick='location.href="./components.html"'>ESCS Components</button>`);
+				}else{
+					echo(`<button class="menubar-btn"></button>`);
+				}
+			</nodehp>
+			<button class="menubar-btn" id="dark-mode-mobile" onclick="toggle_mode();">Dark Mode</button>
+			<button class="menubar-btn" id='mobile-search-button'>Search</button>
+		</div>
+		<div class="menu-bar mobile-interactive" id="path-navbar">
+			<div class="right">
+		        <nodehp>
+		        	if(!head){
+		        		var path_str = "";
+			        	code_path_split.forEach((code_path)=>{
+			        		if(path_str != ""){
+			        			path_str += "." + code_path;
+			        		}else{
+			        			path_str += code_path;
+			        		}
+			        		if(code_path != data.title){
+			        			echo(`<button class="menubar-btn" onclick="location.href='./${path_str}.html'">${code_path}</button>`);
+			        		}
+			        	});
+		        	}else{
+		        		echo(`<button class="menubar-btn">${data.title}</button>`);
+		        	}
+		        	echo(`<script type="text/javascript">var path = "${data.path}";</script`);
+		        </nodehp>
+			</div>
+		</div>
+		<div class="menu-bar mobile-interactive" id="search-navbar">
+			<div style="float: right">
+				<input id="search-mobile" placeholder="Search..." list="entities">
+				<button id="search-button-mobile" onclick="search();">Search</button>
+			</div>
+		</div>
+		<script type="text/javascript" src="./entity list.JSON"></script>
+		<script type="text/javascript">
+			var path_navbar = document.getElementById('path-navbar');
+			path_navbar.style.visibility = "hidden";
+			var search_navbar = document.getElementById('search-navbar');
+			search_navbar.style.visibility = "hidden";
+
+
+			document.getElementById('mobile-path-button').onclick = ()=>{
+				if(path_navbar.style.visibility == 'hidden'){
+					path_navbar.style.visibility = "visible";
+					search_navbar.style.visibility = "hidden";
+				}else{
+					path_navbar.style.visibility = "hidden";
+				}
+			}
+
+			document.getElementById('mobile-search-button').onclick = ()=>{
+				if(search_navbar.style.visibility == 'hidden'){
+					search_navbar.style.visibility = "visible";
+					path_navbar.style.visibility = "hidden";
+				}else{
+					search_navbar.style.visibility = "hidden";
+				}
+			}
+
+
+			var path_arr = path.split('.');
+			var head = path_arr[0];
+
+
+			var datalist = document.getElementById('entities');
+			entity_search_list.forEach((entity)=>{
+				datalist.innerHTML += `<option value="${entity}">`
+			});
+			var entity_list_set = new Set(entity_list);
+			var entity_search_list_set = new Set(entity_list);
+
+			search = function(){
+				var desktop = document.getElementById('search').value;
+				var mobile = document.getElementById('search-mobile').value;
+				var query = "";
+				if(desktop != ""){
+					query = desktop;
+				}else{
+					query = mobile;
+				}
+
+				if(entity_list_set.has(query)){
+					location.href = `./${head}.${query}.html`;
+				}else{
+					var arr = query.split('.');
+					var last = arr[arr.length-1];
+					var href = query.substr(0, query.length - last.length - 1);
+
+					if(entity_list_set.has(href)){
+						location.href = `./${head}.${href}.html#${last}`;
+					}
+				}
+			}
+
+
+			document.addEventListener('keydown', (event)=>{
+				if(event.keyCode == 13){
+					search();
+				}
+			});
+
+
+
+
+			create_cookie = function(cname, cvalue){
+			    document.cookie = cname + ' =' + cvalue + "; path=/; SameSite=None; Secure";
+			}
+
+			delete_cookie = function(cname){
+			    document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+			}
+
+
+			get_cookie = function(cname){
+			    var name = cname + "=";
+			    var ca = document.cookie.split(';');
+			    for(var i = 0; i < ca.length; i++){
+			        var c = ca[i];
+			        while(c.charAt(0) == ' '){
+			            c = c.substring(1);
+			        }
+			        if(c.indexOf(name) == 0){
+			            return c.substring(name.length, c.length);
+			        }
+			    }
+			    return "";
+			}
+
+			var forEach = function(arr, event){
+				var length = arr.length;
+				for(var i=0; i<arr.length;i++){
+					event(arr[i]);
+				}
+			}
+
+			var mode = "light";
+			toggle_mode = function(){
+				if(mode == "light"){
+					set_mode('dark');
+				}else{
+					set_mode('light');
+				}
+			}
+
+			set_mode = function(_mode){
+				console.log(_mode);
+				if(_mode == "dark"){
+					mode = "dark";
+					create_cookie('viewmode', 'dark');
+					document.getElementById('dark-mode').innerHTML = "Light Mode";
+					document.getElementById('dark-mode-mobile').innerHTML = "Light Mode";
+
+					// css
+					document.body.classList.toggle('dark');
+					forEach(document.getElementsByClassName('code'), (div)=>{
+						div.classList.add('dark-code');
+					});
+					forEach(document.getElementsByTagName('a'), (div)=>{
+						div.classList.add('dark');
+					});
+					forEach(document.getElementsByClassName('menu-bar'), (div)=>{
+						div.classList.add('menu-bar-dark');
+					});
+					forEach(document.getElementsByTagName('th'), (div)=>{
+						div.classList.add('dark');
+					});
+					forEach(document.getElementsByTagName('tr'), (div)=>{
+						div.classList.add('dark');
+					});
+				}else{
+					mode = "light";
+					create_cookie('viewmode', 'light');
+					document.getElementById('dark-mode').innerHTML = "Dark Mode";
+					document.getElementById('dark-mode-mobile').innerHTML = "Dark Mode";
+
+					// css
+					document.body.classList.toggle('dark');
+					forEach(document.getElementsByClassName('code'), (div)=>{
+						div.classList.remove('dark-code');
+					});
+					forEach(document.getElementsByTagName('a'), (div)=>{
+						div.classList.remove('dark');
+					});
+					forEach(document.getElementsByClassName('menu-bar'), (div)=>{
+						div.classList.remove('menu-bar-dark');
+					});
+					forEach(document.getElementsByTagName('th'), (div)=>{
+						div.classList.remove('dark');
+					});
+					forEach(document.getElementsByTagName('tr'), (div)=>{
+						div.classList.remove('dark');
+					});
+				}
+			}
+
+			if(get_cookie('viewmode') != ""){
+				mode = get_cookie('viewmode');
+				document.addEventListener("DOMContentLoaded", ()=>{
+					set_mode(mode);
+				});
+			}else{
+				create_cookie('viewmode', 'light');
+			}
+		</script>
+	</header>
+	<body>
+		<div id="container">
+			<nodehp>
+				var param_type_color = function(str){
+					var array = false;
+					if(str[0] == "[" && str[str.length-1] == "]"){
+						array = true;
+						str = str.slice(1, str.length-1);
+					}
+
+					var color = "";
+
+					if(str == "String"){
+						color = "yellow";
+					}else if(str == "Int" || str == "Number" || str == "Hex" || str == "Boolean"){
+						color = "purple";
+					}else if(str == "Function" || str == "Object"){
+						color = "blue";
+					}else{
+						color = "white";
+					}
+
+					if(!array){
+						return `<var><span class="${color}">${str}</span></var>`;
+					}else{
+						return `<var><span class="white">[</span><span class="${color}">${str}</span><span class="white">]</span></var>`;
+					}
+				}
+
+				var type_color = function(str){
+					if(str.includes(",")){
+						var arr = str.split(',');
+						var output = "";
+
+						for(var i=0; i<arr.length;i++){
+							output += type_color(arr[i]);
+							if(i < arr.length-1){
+								output += " / ";
+							}
+						}
+						return output;
+					}else{
+						if(str == ""){
+							return '';
+						}else if((str[0] == `"` && str[str.length-1] == `"`) || (str[0] == `'` && str[str.length-1] == `'`)){//string
+							return `<var><span class="yellow">${str}</span></var>`;
+						}else if(str.includes(' ')){
+							return str;
+						}else if(!isNaN(str)){// number
+							return `<var><span class="purple">${str}</span></var>`;
+						}else if(str == "true" || str == "False"){
+							return `<var><span class="purple">${str}</span></var>`;
+						}else{
+							return param_type_color(str);
+						}
+					}
+				}
+
+
+
+				// heading
+				echo('<div id="header-spacing"></div>')
+				echo(`<h1>${data.title}</h1>`);
+				echo(`<p>${data.description}</p>`);
+				
+				var objects = [];
+				var methods = [];
+				var properties = [];
+				var classes = [];
+				var misc = [];
+				var options = [];
+
+				data.children.forEach((child)=>{
+					if(child.type == "obj"){
+						objects.push(child);
+					}else if(child.type == "method"){
+						methods.push(child);
+					}else if(child.type == "property"){
+						properties.push(child);
+					}else if(child.type == "class" || child.type == "entity" || child.type == "return"){
+						classes.push(child);
+					}else if(child.type == "options"){
+						options.push(child);
+					}else{
+						misc.push(child);
+					}
+				});
+
+				//code
+				if(!head && data.type != "return"){
+					var code_path_string = "";
+					for(var i = code_path_split.length - 1; i>=0; i--){
+						if(code_path_string != ""){
+							code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+						}else{
+							code_path_string = `<span class="blue">${code_path_split[i]}</span>`;
+						}
+					}
+					if(data.type != "class"){
+						echo(`<div class="code">${code_path_string}</div>`);
+					}else{
+						var params_string = "";
+						for(var i=0; i<data.params.length;i++){
+							params_string += tag("span", `class="orange"`, data.params[i].name);
+							if(i != data.params.length-1){
+								params_string += ", ";
+							}
+						}
+						echoTag("div", `class="code"`, `${tag("span", `class="red"`, "new")} ${code_path_string}(${params_string});`);
+					}
+				}
+
+
+				// table of contents
+				if(data.components.length > 0){
+					echo("<h4>Components</h4><ul>");
+					data.components.forEach((component)=>{
+						echoTag('li', '',
+							tag("a", `href=#${component.name}`, component.name)
+						);
+					});
+
+					echo("</ul>");
+				}
+
+				if(classes.length > 0){
+					echo("<h4>Classes</h4><ul>");
+					classes.forEach((cls)=>{
+						if(cls.type == "return"){
+							echo(`<li><a href='./${data.path}.${cls.name}.html'>${cls.name}</a></li>`);
+						}else{
+							echo(`<li><a href='./${data.path}.${cls.name}.html'>${cls.name}*</a></li>`);
+						}
+					});
+
+					echo("</ul>");
+				}
+
+				if(objects.length > 0){
+					echo("<h4>Objects</h4><ul>");
+					objects.forEach((obj)=>{
+						echo(`<li><a href='./${data.path}.${obj.name}.html'>${obj.name}</a></li>`);
+					});
+
+					echo("</ul>");
+				}
+
+				if(methods.length > 0){
+					echo("<h4>Methods</h4><ul>");
+					methods.forEach((method)=>{
+						echo(`<li><a href="#${method.name}">${method.name}</a></li>`);
+					});
+
+					echo("</ul>");
+				}
+
+				if(properties.length > 0){
+					echo("<h4>Properties</h4><ul>");
+					properties.forEach((prop)=>{
+						echo(`<li><a href="#${prop.name}">${prop.name}</a></li>`);
+					});
+
+					echo("</ul>")
+				}
+
+				if(misc.length > 0){
+					echo("<h4>Misc</h4><ul>");
+					misc.forEach((miscelaneous)=>{
+						echo(`<li>${miscelaneous.name}, ${miscelaneous.type}</li>`);
+					});
+
+					echo("</ul>");
+				}
+
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				echo('<hr>');
+
+				// components
+				if(data.components.length > 0){
+					data.components.forEach((comp)=>{
+						echo(`<h3 id='${comp.name}'>${comp.name}</h3>`);
+						echoTag('p', '', comp.description);
+
+						var _default = false;
+						for(var i = comp.params.length - 1; i>=0; i--){
+							if(comp.params[i]._default != ""){
+								_default = true;
+								break;
+							}
+						}
+
+						if(_default){
+							var table =`<table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+													<th>Default</th>
+												</tr>`;
+							comp.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param.name}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+												<td>${type_color(param._default)}</td>
+											</tr>`;
+							});
+						}else{
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+												</tr>`;
+							comp.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param.name}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+											</tr>`;
+							});
+						}
+
+						echo(table + "</table>");
+					});
+				}
+
+
+				// classes
+				if(classes.length > 0){
+					echo("<h2>Classes</h2>");
+					var first = true;
+					classes.forEach((cls)=>{
+						// name
+						if(!first){
+							if(cls.components.length == 0){
+								echo(`<h3 style="margin-top: 0px;"><a href='./${data.path}.${cls.name}.html'>${cls.name}</a></h3>`);
+							}else{
+								echo(`<h3 style="margin-top: 0px;"><a href='./${data.path}.${cls.name}.html'>${cls.name}*</a></h3>`);
+							}
+						}else{
+							if(cls.components.length == 0){
+								echo(`<h3 id="${cls.name}" style="margin-top: 0px;"><a href='./${data.path}.${cls.name}.html'>${cls.name}</a></h3>`);
+							}else{
+								echo(`<h3 id="${cls.name}" style="margin-top: 0px;"><a href='./${data.path}.${cls.name}.html'>${cls.name}*</a></h3>`);
+							}
+							first = false;
+						}
+
+						// description
+						echo(`<p style="margin-top: 0px;">${cls.description}</p>`);
+
+						// code (only for class type)
+						if(cls.type == "class"){
+							var code_path_string = `<span class="blue">${cls.name}</span>`;
+							for(var i = code_path_split.length - 1; i>=0; i--){
+								code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+							}
+							var params_string = "";
+							for(var i=0; i<cls.params.length;i++){
+								params_string += `<span class="orange">${cls.params[i].name}</span>`;
+								if(i != cls.params.length-1){
+									params_string += ", ";
+								}
+							}
+							echoTag("div", `class="code"`, `${tag("span", `class="red"`, "new")} ${code_path_string}(${params_string});`);
+						}
+
+
+						// param table
+						if(cls.params.length > 0){
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+												</tr>`;
+
+							cls.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param.name}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+											</tr>`;
+							});
+
+							echo(table + "</table>");
+						}
+					});
+					echo("<br><br>");
+				}
+
+				// objects
+				if(objects.length > 0){
+					echo("<h2>Objects</h2>");
+					var first = true;
+					objects.forEach((obj)=>{
+						// name
+						if(!first){
+							echo(`<h3><a href='./${data.path}.${obj.name}.html'>${obj.name}</a></h3>`);
+						}else{
+							echo(`<h3 style="margin-top: 0px;"><a href='./${data.path}.${obj.name}.html'>${obj.name}</a></h3>`);
+							first = false;
+						}
+
+						if(obj.children.size == 0){
+							echo('<p class="red">Empty</p>');
+						}
+
+						// description
+						echo(`<p style="margin-top: 0px;">${obj.description}</p>`);
+
+						// code
+						var code_path_string = `<span class="blue">${obj.name}</span>`;
+						for(var i = code_path_split.length - 1; i>=0; i--){
+							code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+						}
+						echo(`<div class="code">${code_path_string}</div>`);
+					});
+					echo("<br><br>");
+				}
+
+				// methods
+				if(methods.length > 0){
+					echo("<h2>Methods</h2>");
+					var first = true;
+					methods.forEach((method)=>{
+						// name
+						if(!first){
+							echo(`<h3 id="${method.name}">${method.name}</a></h3>`);
+						}else{
+							echo(`<h3 id="${method.name}" style="margin-top: 0px;">${method.name}</a></h3>`);
+							first = false;
+						}
+
+						// description
+						echo(`<p style="margin-top: 0px;">${method.description}</p>`);
+
+						// code
+						var code_path_string = `<span class="blue">${method.name}</span>`;
+						for(var i = code_path_split.length - 1; i>=0; i--){
+							code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+						}
+						var params_string = "";
+						for(var i=0; i<method.params.length;i++){
+							params_string += `<span class="orange">${method.params[i].name}</span>`;
+							if(i != method.params.length-1){
+								params_string += ", ";
+							}
+						}
+						echo(`<div class="code">${code_path_string}(${params_string});</div>`);
+
+						// param table
+						if(method.params.length > 0){
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+												</tr>`;
+
+							method.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param.name}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+											</tr>`;
+							});
+
+							echo(table + "</table>");
+						}
+
+						// further descriptions of params
+						if(method.children != null){
+							method.children.forEach((child)=>{
+								if(child.type == "options"){
+									echo(`<h4>${method.name} > ${child.name}</h4>`);
+									echo(`<p>${child.description}</p>`);
+									var table =`<br><br><table>
+														<tr>
+															<th>Option</th>
+															<th>Description</th>
+														</tr>`;
+
+									child.options.forEach((option)=>{
+										table +=   `<tr>
+														<td>${type_color(option.name)}</td>
+														<td>${option.description}</td>
+													</tr>`;
+									});
+
+									echo(table + "</table>");
+								}else if(child.type == "config"){
+									var _default = false;
+									for(var i = child.params.length - 1; i>=0; i--){
+										if(child.params[i]._default != ""){
+											_default = true;
+											break;
+										}
+									}
+
+									echo(`<h4>${method.name} > ${child.name}</h4>`);
+									echo(`<p>${child.description}</p>`);
+									if(_default){
+										var table =`<br><br><table>
+															<tr>
+																<th>Parameter</th>
+																<th>Type</th>
+																<th>Description</th>
+																<th>Default</th>
+															</tr>`;
+										child.params.forEach((param)=>{
+											table +=   `<tr>
+															<td><var>${param.name}</var></td>
+															<td>${type_color(param.type)}</td>
+															<td>${param.description}</td>
+															<td>${type_color(param._default)}</td>
+														</tr>`;
+										});
+									}else{
+										var table =`<br><br><table>
+															<tr>
+																<th>Parameter</th>
+																<th>Type</th>
+																<th>Description</th>
+															</tr>`;
+										child.params.forEach((param)=>{
+											table +=   `<tr>
+															<td><var>${param.name}</var></td>
+															<td>${type_color(param.type)}</td>
+															<td>${param.description}</td>
+														</tr>`;
+										});
+									}
+
+
+									echo(table + "</table>");
+								}else{
+									error(`Methods cannot have type (${child.type}) as a child | @ (${method.parent_string + "." + method.name})`);
+								}
+							});
+						}
+					});
+					echo("<br><br>");
+				}
+
+				// properties
+				if(properties.length > 0){
+					echo("<h2>Properties</h2>");
+					var first = true;
+						properties.forEach((property)=>{
+							// name
+							if(!first){
+								echo(`<h3 id="${property.name}">${property.name}</h3>`);
+							}else{
+								echo(`<h3 id="${property.name}" style="margin-top: 0px;">${property.name}</h3>`);
+								first = false;
+							}
+
+							echoTag("p", '', type_color(property.proto));
+
+							// description
+							echo(`<p style="margin-top: 0px;">${property.description}</p>`);
+
+							// code
+							if(data.type != "return"){
+								var code_path_string = `<span class="blue">${property.name}</span>`;
+								for(var i = code_path_split.length - 1; i>=0; i--){
+									code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+								}
+								echo(`<div class="code">${code_path_string}</div>`);
+							}else{
+								echo(`<div class="code"><span class="green">${data.title}</span>.<span class="blue">${property.name}</span></div>`)
+							}
+						});
+					echo("<br><br>");
+				}
+
+				if(misc.length > 0){
+					echo("<h4>miscelaneous</h4><ul>");
+					misc.forEach((miscelaneous)=>{
+						echo(`<li>${miscelaneous.name}</li>`);
+					});
+
+					echo("</ul>");
+				}
+
+			</nodehp>
+		</div>
+	</body>
+	<footer>
+		<p>Documentation Generated by <a href="https://www.npmjs.com/package/scrybe">Scrybe</a></p>
+	</footer>
+</html>
