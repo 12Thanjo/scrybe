@@ -322,6 +322,15 @@
 				}
 
 
+				var param_name_color = function(str){
+					if(str[0] == '.' && str[1] == '.' && str[2] == '.'){
+						return tag('span', "class='red'", '...') + str.substring(3,str.length);
+					}else{
+						return  str;
+					}
+				}
+
+
 
 				// heading
 				echo('<div id="header-spacing"></div>')
@@ -356,9 +365,9 @@
 					var code_path_string = "";
 					for(var i = code_path_split.length - 1; i>=0; i--){
 						if(code_path_string != ""){
-							code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+							code_path_string = `<span class="blue">${code_path_split[i]}</span>.` + code_path_string;
 						}else{
-							code_path_string = `<span class="blue">${code_path_split[i]}</span>`;
+							code_path_string = `<span class="green">${code_path_split[i]}</span>`;
 						}
 					}
 					if(data.type != "class"){
@@ -366,12 +375,55 @@
 					}else{
 						var params_string = "";
 						for(var i=0; i<data.params.length;i++){
-							params_string += tag("span", `class="orange"`, data.params[i].name);
+							params_string += tag("span", `class="orange"`, param_name_color(data.params[i].name));
 							if(i != data.params.length-1){
 								params_string += ", ";
 							}
 						}
 						echoTag("div", `class="code"`, `${tag("span", `class="red"`, "new")} ${code_path_string}(${params_string});`);
+
+						var _default = false;
+						for(var i = data.params.length - 1; i>=0; i--){
+							if(data.params[i]._default != ""){
+								_default = true;
+								break;
+							}
+						}
+
+
+						if(_default){
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+													<th>Default</th>
+												</tr>`;
+							data.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param_name_color(param.name)}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+												<td>${type_color(param._default)}</td>
+											</tr>`;
+							});
+						}else{
+							var table =`<br><br><table>
+												<tr>
+													<th>Parameter</th>
+													<th>Type</th>
+													<th>Description</th>
+												</tr>`;
+							data.params.forEach((param)=>{
+								table +=   `<tr>
+												<td><var>${param_name_color(param.name)}</var></td>
+												<td>${type_color(param.type)}</td>
+												<td>${param.description}</td>
+											</tr>`;
+							});
+						}
+
+						echo(table + "</table>");
 					}
 				}
 
@@ -380,6 +432,7 @@
 				if(data.components.length > 0){
 					echo("<h4>Components</h4><ul>");
 					data.components.forEach((component)=>{
+						console.log(data.components);
 						echoTag('li', '',
 							tag("a", `href=#${component.name}`, component.name)
 						);
@@ -391,11 +444,7 @@
 				if(classes.length > 0){
 					echo("<h4>Classes</h4><ul>");
 					classes.forEach((cls)=>{
-						if(cls.type == "return"){
-							echo(`<li><a href='./${data.path}.${cls.name}.html'>${cls.name}</a></li>`);
-						}else{
-							echo(`<li><a href='./${data.path}.${cls.name}.html'>${cls.name}*</a></li>`);
-						}
+						echo(`<li><a href='./${data.path}.${cls.name}.html'>${cls.name}</a></li>`);
 					});
 
 					echo("</ul>");
@@ -464,7 +513,7 @@
 												</tr>`;
 							comp.params.forEach((param)=>{
 								table +=   `<tr>
-												<td><var>${param.name}</var></td>
+												<td><var>${param_name_color(param.name)}</var></td>
 												<td>${type_color(param.type)}</td>
 												<td>${param.description}</td>
 												<td>${type_color(param._default)}</td>
@@ -479,7 +528,7 @@
 												</tr>`;
 							comp.params.forEach((param)=>{
 								table +=   `<tr>
-												<td><var>${param.name}</var></td>
+												<td><var>${param_name_color(param.name)}</var></td>
 												<td>${type_color(param.type)}</td>
 												<td>${param.description}</td>
 											</tr>`;
@@ -517,13 +566,13 @@
 
 						// code (only for class type)
 						if(cls.type == "class"){
-							var code_path_string = `<span class="blue">${cls.name}</span>`;
+							var code_path_string = `<span class="green">${cls.name}</span>`;
 							for(var i = code_path_split.length - 1; i>=0; i--){
-								code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+								code_path_string = `<span class="blue">${code_path_split[i]}</span>.` + code_path_string;
 							}
 							var params_string = "";
 							for(var i=0; i<cls.params.length;i++){
-								params_string += `<span class="orange">${cls.params[i].name}</span>`;
+								params_string += `<span class="orange">${param_name_color(cls.params[i].name)}</span>`;
 								if(i != cls.params.length-1){
 									params_string += ", ";
 								}
@@ -534,20 +583,46 @@
 
 						// param table
 						if(cls.params.length > 0){
-							var table =`<br><br><table>
-												<tr>
-													<th>Parameter</th>
-													<th>Type</th>
-													<th>Description</th>
-												</tr>`;
+							var _default = false;
+							for(var i = cls.params.length - 1; i>=0; i--){
+								if(cls.params[i]._default != ""){
+									_default = true;
+									break;
+								}
+							}
 
-							cls.params.forEach((param)=>{
-								table +=   `<tr>
-												<td><var>${param.name}</var></td>
-												<td>${type_color(param.type)}</td>
-												<td>${param.description}</td>
-											</tr>`;
-							});
+
+							if(_default){
+								var table =`<br><br><table>
+													<tr>
+														<th>Parameter</th>
+														<th>Type</th>
+														<th>Description</th>
+														<th>Default</th>
+													</tr>`;
+								cls.params.forEach((param)=>{
+									table +=   `<tr>
+													<td><var>${param_name_color(param.name)}</var></td>
+													<td>${type_color(param.type)}</td>
+													<td>${param.description}</td>
+													<td>${type_color(param._default)}</td>
+												</tr>`;
+								});
+							}else{
+								var table =`<br><br><table>
+													<tr>
+														<th>Parameter</th>
+														<th>Type</th>
+														<th>Description</th>
+													</tr>`;
+								cls.params.forEach((param)=>{
+									table +=   `<tr>
+													<td><var>${param_name_color(param.name)}</var></td>
+													<td>${type_color(param.type)}</td>
+													<td>${param.description}</td>
+												</tr>`;
+								});
+							}
 
 							echo(table + "</table>");
 						}
@@ -576,9 +651,9 @@
 						echo(`<p style="margin-top: 0px;">${obj.description}</p>`);
 
 						// code
-						var code_path_string = `<span class="blue">${obj.name}</span>`;
+						var code_path_string = `<span class="green">${obj.name}</span>`;
 						for(var i = code_path_split.length - 1; i>=0; i--){
-							code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+							code_path_string = `<span class="blue">${code_path_split[i]}</span>.` + code_path_string;
 						}
 						echo(`<div class="code">${code_path_string}</div>`);
 					});
@@ -602,13 +677,13 @@
 						echo(`<p style="margin-top: 0px;">${method.description}</p>`);
 
 						// code
-						var code_path_string = `<span class="blue">${method.name}</span>`;
+						var code_path_string = `<span class="green">${method.name}</span>`;
 						for(var i = code_path_split.length - 1; i>=0; i--){
-							code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+							code_path_string = `<span class="blue">${code_path_split[i]}</span>.` + code_path_string;
 						}
 						var params_string = "";
 						for(var i=0; i<method.params.length;i++){
-							params_string += `<span class="orange">${method.params[i].name}</span>`;
+							params_string += `<span class="orange">${param_name_color(method.params[i].name)}</span>`;
 							if(i != method.params.length-1){
 								params_string += ", ";
 							}
@@ -626,7 +701,7 @@
 
 							method.params.forEach((param)=>{
 								table +=   `<tr>
-												<td><var>${param.name}</var></td>
+												<td><var>${param_name_color(param.name)}</var></td>
 												<td>${type_color(param.type)}</td>
 												<td>${param.description}</td>
 											</tr>`;
@@ -676,7 +751,7 @@
 															</tr>`;
 										child.params.forEach((param)=>{
 											table +=   `<tr>
-															<td><var>${param.name}</var></td>
+															<td><var>${param_name_color(param.name)}</var></td>
 															<td>${type_color(param.type)}</td>
 															<td>${param.description}</td>
 															<td>${type_color(param._default)}</td>
@@ -691,7 +766,7 @@
 															</tr>`;
 										child.params.forEach((param)=>{
 											table +=   `<tr>
-															<td><var>${param.name}</var></td>
+															<td><var>${param_name_color(param.name)}</var></td>
 															<td>${type_color(param.type)}</td>
 															<td>${param.description}</td>
 														</tr>`;
@@ -701,7 +776,7 @@
 
 									echo(table + "</table>");
 								}else{
-									error(`Methods cannot have type (${child.type}) as a child | @ (${method.parent_string + "." + method.name})`);
+									error(`Methods cannot have type (${child.type}) as a child, in (${method.parent_string + "." + method.name})`, child.line);
 								}
 							});
 						}
@@ -729,13 +804,13 @@
 
 							// code
 							if(data.type != "return"){
-								var code_path_string = `<span class="blue">${property.name}</span>`;
+								var code_path_string = `<span class="green">${property.name}</span>`;
 								for(var i = code_path_split.length - 1; i>=0; i--){
-									code_path_string = `<span class="green">${code_path_split[i]}</span>.` + code_path_string;
+									code_path_string = `<span class="blue">${code_path_split[i]}</span>.` + code_path_string;
 								}
 								echo(`<div class="code">${code_path_string}</div>`);
 							}else{
-								echo(`<div class="code"><span class="green">${data.title}</span>.<span class="blue">${property.name}</span></div>`)
+								echo(`<div class="code"><span class="blue">${data.title}</span>.<span class="green">${property.name}</span></div>`)
 							}
 						});
 					echo("<br><br>");

@@ -76,8 +76,10 @@ Type of the entity.
 - return
 - head
 - options
+- config
 - entity
 - component
+- environment
 
 
 The `head` type is used for the library description. It should be the first scrybe command in the file given with the `-f` or `-file` command.\

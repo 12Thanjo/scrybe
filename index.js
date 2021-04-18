@@ -1,3 +1,11 @@
+Object.prototype.in = function() {
+    for(var i=0; i<arguments.length; i++)
+       if(arguments[i] == this) return true;
+    return false;
+}
+
+
+
 var virtuosity = require('virtuosity-server');
 var {files} = require('virtuosity-server');
 var nodehp = require('nodehp');
@@ -273,6 +281,9 @@ parse_file = function(path, parent){
 					}else if(keyword("@type ")){
 						cursor += ("@type ").length;
 						current_entity.type = get_line();
+						if(!current_entity.type.in("head", "object", "obj", "method", "property", "prop", "class", "return", "head", "options", "entity", "component", "environment", 'config')){
+							error(`Invalid type (${current_entity.type}) in ${current_entity.name}`, current_entity.line);
+						}
 						if(current_entity.type == "object"){
 							current_entity.type = "obj";
 						}else if(current_entity.type == "prop"){
@@ -296,7 +307,7 @@ parse_file = function(path, parent){
 					}else if(keyword("@component ")){
 						cursor += ("@component ").length;
 						current_entity.components.push(get_line());
-					}else if(keyword("@option ")){
+					}else if(keyword("@option ")){ 
 						cursor += ("@option {").length;
 						var option_name = '';
 						var option_description = '';
