@@ -397,7 +397,7 @@ parse_file = function(path, parent){
 			}
 			cursor += 1;
 		}
-		console.log(current_line);
+		// console.log(current_line);
 	}else{
 		error(`File path "${path}" does not exist`);
 	}

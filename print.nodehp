@@ -203,7 +203,6 @@
 			}
 
 			set_mode = function(_mode){
-				console.log(_mode);
 				if(_mode == "dark"){
 					mode = "dark";
 					create_cookie('viewmode', 'dark');
@@ -432,7 +431,6 @@
 				if(data.components.length > 0){
 					echo("<h4>Components</h4><ul>");
 					data.components.forEach((component)=>{
-						console.log(data.components);
 						echoTag('li', '',
 							tag("a", `href=#${component.name}`, component.name)
 						);
