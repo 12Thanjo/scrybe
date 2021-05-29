@@ -1,6 +1,6 @@
 {
   "name": "scrybe",
-  "version": "2.0.9",
+  "version": "2.0.11",
   "description": "Automated documentation creation tool",
   "main": "index.js",
   "scripts": {

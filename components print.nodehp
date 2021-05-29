@@ -28,7 +28,7 @@
 		    	<button class="menubar-btn" id="dark-mode" onclick="toggle_mode();">Dark Mode</button>
 		    	<nodehp>
 		    		if(data.use_components){
-		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>ESCS Components</button>`);
+		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>OCS Components</button>`);
 		    		}
 		    	</nodehp>
 		        <input id="search" placeholder="Search..." list="entities" style="width: 250px;">
@@ -226,8 +226,8 @@ W
 	<body>
 		<div id="container">
 			<div id="header-spacing"></div>
-			<h1>ESCS Components</h1>
-			<p>ESCS is an adaptation of an entity component system. escs (pronounced "essex") stands for Entity, Singleton, Component, System. Documentation for ESCS can be found <a href="https://www.npmjs.com/package/escs">here</a>.</p>
+			<h1>OCS Components</h1>
+			<p>OCS is a programming paradigm combining traits of OOP and ECS.. Documentation for OCS can be found <a href="https://www.npmjs.com/package/ocs">here</a>.</p>
 			<h3>Environments:</h3>
 			<ul>
 				<nodehp>

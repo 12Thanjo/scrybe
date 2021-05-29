@@ -66,6 +66,10 @@ args.forEach((arg)=>{
 	if(arg.command == "-file" || arg.command == "-f"){
 		file_path = arg.data;
 	}else if(arg.command == "-print" || arg.command == "-p"){
+		var last_char = arg.data[arg.data.length-1];
+		if(last_char != "/" || last_char != "\\"){
+			arg.data += "/";
+		}
 		print_path = arg.data;
 	}
 });
@@ -469,17 +473,17 @@ function traverse_tree(target, depth, completed, parent, end){
 			parent = "";
 		}
 
-		var color = virtuosity.cmd.color.magenta;
+		var color = virtuosity.cmd.color.yellow;
 		if(target.type == "obj"){
 			color = virtuosity.cmd.color.green;
 		}else if(target.type == "method"){
 			color = virtuosity.cmd.color.cyan;
 		}else if(target.type == "property"){
-			color = virtuosity.cmd.color.blue;
+			color = virtuosity.cmd.color.magenta;
 		}else if(target.type == "head"){
-			color = virtuosity.cmd.backgroundColor.blue;
+			color = virtuosity.cmd.backgroundColor.cyan + virtuosity.cmd.color.black;
 		}else if(target.type == "class" || target.type == "entity" || target.type == "return"){
-			color = virtuosity.cmd.color.yellow;
+			color = virtuosity.cmd.color.blue;
 		}
 
 		virtuosity.cmd.log(str + color + target.name + virtuosity.cmd.backgroundColor.black);

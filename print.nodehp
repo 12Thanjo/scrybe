@@ -43,7 +43,7 @@
 		    	<button class="menubar-btn" id="dark-mode" onclick="toggle_mode();">Dark Mode</button>
 		    	<nodehp>
 		    		if(data.use_components){
-		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>ESCS Components</button>`);
+		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>OCS Components</button>`);
 		    		}
 		    	</nodehp>
 		        <input id="search" placeholder="Search..." list="entities" style="width: 250px;">
@@ -55,7 +55,7 @@
 			<button class="menubar-btn" id="mobile-path-button">Path</button>
 			<nodehp>
 				if(data.use_components){
-					echo(`<button class="menubar-btn" onclick='location.href="./components.html"'>ESCS Components</button>`);
+					echo(`<button class="menubar-btn" onclick='location.href="./components.html"'>OCS Components</button>`);
 				}else{
 					echo(`<button class="menubar-btn"></button>`);
 				}

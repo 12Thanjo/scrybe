@@ -85,7 +85,7 @@ Type of the entity.
 The `head` type is used for the library description. It should be the first scrybe command in the file given with the `-f` or `-file` command.\
 The `return` type is used for classes that can only be created by the user with a function rather than with the `new` keyword.\
 The `options` type is used if the parameter needs to have it's options described. For example, a config object. An `options` type can have `@param` or `@option` (described later), but not both types at the same time.\
-The `entity` and `component` types are used for classes that are ECS based, such as using a library like [escs](https://www.npmjs.com/package/escs).
+The `entity` and `component` types are used for classes that are ECS based, such as using a library like [OCS](https://www.npmjs.com/package/OCS).
 
 ### @description
 `Supports HTML manipulation`\
