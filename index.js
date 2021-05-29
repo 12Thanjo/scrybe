@@ -5,7 +5,6 @@ Object.prototype.in = function() {
 }
 
 
-
 var virtuosity = require('virtuosity-server');
 var {files} = require('virtuosity-server');
 var nodehp = require('nodehp');
