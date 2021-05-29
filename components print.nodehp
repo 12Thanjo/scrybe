@@ -35,7 +35,6 @@
 		        <button id="search-button" onclick="search();">Search</button>
 		    </div>
 		</div>
-W
 
 		<div class="menu-bar" id="mobile-navbar">
 	        <nodehp>

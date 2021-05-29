@@ -81,7 +81,7 @@
 		        	}else{
 		        		echo(`<button class="menubar-btn">${data.title}</button>`);
 		        	}
-		        	echo(`<script type="text/javascript">var path = "${data.path}";</script`);
+		        	echo(`<script type="text/javascript">var path = "${data.path}";</script>`);
 		        </nodehp>
 			</div>
 		</div>
@@ -196,8 +196,10 @@
 			var mode = "light";
 			toggle_mode = function(){
 				if(mode == "light"){
+					console.log("set to dark");
 					set_mode('dark');
 				}else{
+					console.log("set to light");
 					set_mode('light');
 				}
 			}
