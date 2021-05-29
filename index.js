@@ -157,6 +157,9 @@ push_entity = function(target){
 				if(current_entity.type == "environment"){
 					new Environment(current_entity.name);
 				}else if(current_entity.type == "component"){
+					if(environments.get(current_entity.env).components.has(current_entity.name)){
+							error(`environment (${current_entity.env}) already has component (${current_entity.name})`, current_entity.line);
+					}
 					var new_comp = new Component(current_entity.name, current_entity.env, current_entity.description, current_entity.params);
 				}
 			}else{// OOP

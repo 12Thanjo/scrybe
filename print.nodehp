@@ -40,7 +40,7 @@
 		        </nodehp>
 		    </div>
 		    <div class="right">
-		    	<button class="menubar-btn" id="dark-mode" onclick="toggle_mode();">Dark Mode</button>
+		    	<button class="menubar-btn" id="dark-mode" onclick="toggle_mode();">Light Mode</button>
 		    	<nodehp>
 		    		if(data.use_components){
 		        		echo(`<button class="menubar-btn" id="Components" onclick='location.href="./components.html"'>OCS Components</button>`);
@@ -60,7 +60,7 @@
 					echo(`<button class="menubar-btn"></button>`);
 				}
 			</nodehp>
-			<button class="menubar-btn" id="dark-mode-mobile" onclick="toggle_mode();">Dark Mode</button>
+			<button class="menubar-btn" id="dark-mode-mobile" onclick="toggle_mode();">Light Mode</button>
 			<button class="menubar-btn" id='mobile-search-button'>Search</button>
 		</div>
 		<div class="menu-bar mobile-interactive" id="path-navbar">
@@ -193,7 +193,7 @@
 				}
 			}
 
-			var mode = "light";
+			var mode = "dark";
 			toggle_mode = function(){
 				if(mode == "light"){
 					console.log("set to dark");
@@ -205,6 +205,7 @@
 			}
 
 			set_mode = function(_mode){
+				console.log("set_mode", _mode);
 				if(_mode == "dark"){
 					mode = "dark";
 					create_cookie('viewmode', 'dark');
@@ -212,7 +213,7 @@
 					document.getElementById('dark-mode-mobile').innerHTML = "Light Mode";
 
 					// css
-					document.body.classList.toggle('dark');
+					document.body.className = "dark";
 					forEach(document.getElementsByClassName('code'), (div)=>{
 						div.classList.add('dark-code');
 					});
@@ -235,7 +236,7 @@
 					document.getElementById('dark-mode-mobile').innerHTML = "Dark Mode";
 
 					// css
-					document.body.classList.toggle('dark');
+					document.body.className = "";
 					forEach(document.getElementsByClassName('code'), (div)=>{
 						div.classList.remove('dark-code');
 					});
@@ -256,11 +257,15 @@
 
 			if(get_cookie('viewmode') != ""){
 				mode = get_cookie('viewmode');
+				console.log(mode);
 				document.addEventListener("DOMContentLoaded", ()=>{
 					set_mode(mode);
 				});
 			}else{
-				create_cookie('viewmode', 'light');
+				create_cookie('viewmode', 'dark');
+				document.addEventListener("DOMContentLoaded", ()=>{
+					set_mode("dark");
+				});
 			}
 		</script>
 	</header>
