@@ -60,7 +60,7 @@ check_string_for_keyword = function(string, cursor, keyword){
 
 var file_path = "";
 var print_path = "";
-var dark_mode = false;
+var use_sublime = false;
 args.forEach((arg)=>{
 	if(arg.command == "-file" || arg.command == "-f"){
 		file_path = arg.data;
@@ -70,6 +70,8 @@ args.forEach((arg)=>{
 			arg.data += "/";
 		}
 		print_path = arg.data;
+	}else if(arg.command == '-sublime' || arg.command == "-s"){
+		use_sublime = true;
 	}
 });
 
@@ -445,6 +447,7 @@ print = function(target, path){
 	virtuosity.files.writeFile(print_path + path + ".html", printout);	
 }
 
+var sublime_str = `{"scope":"source.js - variable.other.js","completions":[\n`;
 var entity_list = [];
 var entity_search_list = [];
 function traverse_tree(target, depth, completed, parent, end){
@@ -497,8 +500,46 @@ function traverse_tree(target, depth, completed, parent, end){
 				str = target.parent_string + "." + target.name;			
 			}
 			entity_search_list.push(str);
-		}
 
+			if(use_sublime){
+				if(target.type == "class" || target.type == "method"){
+					var trigger = `{\n\t\t"trigger":"${str}", \n\t\t"contents":"`;
+					if(target.type == "class"){
+						trigger += "new ";
+					}
+					trigger += `${str}(`;
+
+					var count = 1;
+					target.params.forEach((param)=>{
+						if(count != 1){
+							trigger += ", ";
+						}
+
+						if(param.type == "String"){
+							trigger += `\\"\${${count}:${param.name}}\\"`;
+						}else if(param.type == "Function"){
+							trigger += `\${${count}:${param.name}()}`;	
+						}else{
+							trigger += `\${${count}:${param.name}}`;
+						}
+						count += 1;
+					});
+					trigger += `)",\n\t\t"annotation":"${target.description.replace(/<([a-zA-Z|\s=".1-9/#]*)>/g, "")}"`;
+					if(target.type == "class" || target.type == "method"){
+						trigger += `,\n\t\t"kind":"function"\n\t`;
+					}else{
+						trigger += `\n\t`;
+					}
+					trigger += `},`;
+					sublime_str += "\t" + trigger + "\n";
+				}else if(target.type == "property"){
+					var trigger = `{\n\t\t"trigger":"${str}", \n\t\t"contents":"${str}"`;
+					trigger += `,\n\t\t"kind":"variable"\n\t`;
+					trigger += `},`;
+					sublime_str += "\t" + trigger + "\n";
+				}
+			}
+		}
 		if(target.children.size != 0 || target.components.length != 0){
 			print(target, parent + target.name);
 			entity_list.push(str);
@@ -521,15 +562,23 @@ function traverse_tree(target, depth, completed, parent, end){
 	}
 }
 
+
 console.log("\nEntities Documented");
 console.log("--------------------");
 traverse_tree(head, 0, new Set());
+
+if(use_sublime){
+	sublime_str += `]}`;
+	virtuosity.files.writeFile(print_path + `${head.name} completions.sublime-completions`, sublime_str);
+}
+
 
 // css
 virtuosity.files.writeFile(print_path + "style.css", virtuosity.files.readFile('./style.css'));
 
 // entity
 virtuosity.files.writeFile(print_path + "entity list.JSON", `entity_list=${JSON.stringify(entity_list)}; entity_search_list=${JSON.stringify(entity_search_list)}`);
+
 
 
 // components
